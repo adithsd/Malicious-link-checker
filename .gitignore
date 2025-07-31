@@ -1,0 +1,21 @@
+# Ignore virtual environments
+myenv/
+env/
+venv/
+
+# Bytecode and cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# IDE and OS junk
+*.DS_Store
+.idea/
+.vscode/
+
+# Model files (optional)
+*.pkl
+*.h5
+
+# Environment and secrets
+.env

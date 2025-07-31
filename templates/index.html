@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Malicious Link Checker</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 0.7s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .container {
+      max-width: 600px;
+      margin-top: 5%;
+      padding: 40px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .result-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: 500;
+      animation: slideUp 0.5s ease-in-out;
+    }
+
+    @keyframes slideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .malicious {
+      background-color: #ffe6e6;
+      color: #a30000;
+    }
+
+    .legitimate {
+      background-color: #e6fff2;
+      color: #006644;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background-color: #2471a3;
+    }
+
+    footer {
+      font-size: 12px;
+      margin-top: 30px;
+      color: #6c757d;
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .dark-mode .container {
+      background-color: #1e1e1e;
+    }
+
+    .dark-mode input,
+    .dark-mode select,
+    .dark-mode button {
+      background-color: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+    }
+
+    .dark-mode .malicious {
+      background-color: #3b1e1e;
+      color: #f28b82;
+    }
+
+    .dark-mode .legitimate {
+      background-color: #1e3b2c;
+      color: #81c995;
+    }
+  </style>
+</head>
+<body>
+  <div class="container fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>🔍 Malicious Link Checker</h2>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle"/>
+        <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
+      </div>
+    </div>
+
+    <form method="POST">
+      <div class="mb-3">
+        <label for="url" class="form-label">Enter URL:</label>
+        <input type="text" class="form-control" id="url" name="url" placeholder="https://example.com"
+               value="{{ request.form.get('url', '') }}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="model_name" class="form-label">Select Model:</label>
+        <select class="form-select" id="model_name" name="model_name" required>
+          {% for model_name in model_names %}
+          <option value="{{ model_name }}" {% if selected_model == model_name %}selected{% endif %}>
+            {{ model_name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit">Check</button>
+      </div>
+    </form>
+
+    {% if result %}
+    <div class="result-box {% if 'malicious' in result.lower() %}malicious{% else %}legitimate{% endif %}">
+      <strong>Result:</strong> {{ result }}
+    </div>
+    {% endif %}
+
+    <footer class="text-center">
+      <p><strong>Disclaimer:</strong> This is an AI model prediction. Always verify links from trusted sources before visiting.</p>
+    </footer>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Dark Mode Script -->
+  <script>
+    const toggle = document.getElementById('darkModeToggle');
+    toggle.addEventListener('change', function () {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        toggle.checked = true;
+      }
+    });
+  </script>
+</body>
+</html>
